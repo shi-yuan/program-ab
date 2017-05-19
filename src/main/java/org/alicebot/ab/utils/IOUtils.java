@@ -1,132 +1,94 @@
 package org.alicebot.ab.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import java.nio.charset.Charset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class IOUtils {
 
+    public static final Logger LOG = LoggerFactory.getLogger(IOUtils.class);
 
-	BufferedReader reader;
-	BufferedWriter writer;
+    private BufferedReader reader;
+    private BufferedWriter writer;
 
-	public IOUtils(String filePath, String mode) {
-		try {
-			if (mode.equals("read")) {
-				reader = new BufferedReader(new FileReader(filePath));
-			} else if (mode.equals("write")) {
-				(new File(filePath)).delete();
-				writer = new BufferedWriter(new FileWriter(filePath, true));
-			}
-		} catch (IOException e) {
-			System.err.println("error: " + e);
-		}
-	}
-
-	
-	public String readLine() {
-		String result = null;
-		try {
-			result = reader.readLine();
-		} catch (IOException e) {
-			System.err.println("error: " + e);
-		}
-		return result;
-	}
-
-
-	public void writeLine(String line) {
-		try {
-			writer.write(line);
-			writer.newLine();
-		} catch (IOException e) {
-			System.err.println("error: " + e);
-		}
-	}
-
-
-	public void close() {
-		try {
-			if (reader != null) reader.close();
-			if (writer != null) writer.close();
-		} catch (IOException e) {
-			System.err.println("error: " + e);
-		}
-
-	}
-
-
-	public static void writeOutputTextLine(String prompt, String text) {
-		System.out.println(prompt + ": " + text);
-	}
-
-
-	public static String readInputTextLine() {
-		return readInputTextLine(null);
-	}
-
-
-	public static String readInputTextLine(String prompt) {
-		if (prompt != null) {
-			System.out.print(prompt + ": ");
-		}
-        BufferedReader lineOfText = new BufferedReader(new InputStreamReader(System.in));
-		String textLine = null;
-		try {
-			textLine = lineOfText.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return textLine;
-	}
-
-
-	public static File[] listFiles(File dir) {
-		return dir.listFiles();
-	}
-
-
-	public static String system(String evaluatedContents, String failedString) {
-		Runtime rt = Runtime.getRuntime();
-        //System.out.println("System "+evaluatedContents);
-        try {
-            Process p = rt.exec(evaluatedContents);
-            InputStream istrm = p.getInputStream();
-            InputStreamReader istrmrdr = new InputStreamReader(istrm);
-            BufferedReader buffrdr = new BufferedReader(istrmrdr);
-            String result = "";
-            String data = "";
-            while ((data = buffrdr.readLine()) != null) {
-                result += data+"\n";
-            }
-            //System.out.println("Result = "+result);
-            return result;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return failedString;
-
+    public IOUtils(String filePath, String mode) throws IOException {
+        if (mode.equals("read")) {
+            reader = new BufferedReader(new FileReader(filePath));
+        } else if (mode.equals("write")) {
+            Files.delete(Paths.get(filePath));
+            writer = new BufferedWriter(new FileWriter(filePath, true));
         }
-	}
+    }
 
-	
-	public static String evalScript(String engineName, String script) throws Exception {
-        //System.out.println("evaluating "+script);
+    public String readLine() throws IOException {
+        return reader.readLine();
+    }
+
+    public void writeLine(String line) throws IOException {
+        writer.write(line);
+        writer.newLine();
+    }
+
+    public void close() throws IOException {
+        if (reader != null) {
+            reader.close();
+        }
+        if (writer != null) {
+            writer.close();
+        }
+    }
+
+    public static void writeOutputTextLine(String prompt, String text) {
+        System.out.println(prompt + ": " + text);
+    }
+
+    public static String readInputTextLine() throws IOException {
+        return readInputTextLine(null);
+    }
+
+    public static String readInputTextLine(String prompt) throws IOException {
+        if (prompt != null) {
+            System.out.print(prompt + ": ");
+        }
+
+        try (BufferedReader lineOfText = new BufferedReader(new InputStreamReader(System.in))) {
+            return lineOfText.readLine();
+        }
+    }
+
+    public static File[] listFiles(File dir) {
+        return dir.listFiles();
+    }
+
+    public static String system(String evaluatedContents, String failedString) throws IOException {
+        LOG.debug("System {}", evaluatedContents);
+
+        StringBuilder result = new StringBuilder();
+        Process p = Runtime.getRuntime().exec(evaluatedContents);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String data;
+            while ((data = br.readLine()) != null) {
+                result.append(data).append("\n");
+            }
+        } finally {
+            p.destroy();
+        }
+
+        LOG.debug("Result = {}", result);
+
+        return result.toString();
+    }
+
+    public static String evalScript(String engineName, String script) throws Exception {
+        LOG.debug("evaluating {}", script);
+
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
-		String result = ""+engine.eval(script);
-		return result;
-	}
-
+        return "" + engine.eval(script);
+    }
 }
-

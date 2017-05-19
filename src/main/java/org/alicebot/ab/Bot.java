@@ -401,6 +401,8 @@ public class Bot {
     }
 
     /**
+     * aiml2csv
+     *
      * Write all AIMLIF files from bot brain
      */
     public void writeAIMLIFFiles () {
@@ -446,6 +448,8 @@ public class Bot {
     }
 
     /**
+     * csv2aiml
+     *
      * Write all AIML files.  Adds categories for BUILD and DEVELOPMENT ENVIRONMENT
      */
     public void writeAIMLFiles () {

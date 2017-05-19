@@ -30,21 +30,21 @@ import java.util.regex.Pattern;
 public class PreProcessor {
 	static private boolean DEBUG = false;
 
-    public int normalCount = 0;
-    public int denormalCount = 0;
-    public int personCount = 0;
-    public int person2Count = 0;
-    public int genderCount = 0;
-    public String[] normalSubs = new String[MagicNumbers.max_substitutions];
-    public Pattern[] normalPatterns = new Pattern[MagicNumbers.max_substitutions];
-    public String[] denormalSubs = new String[MagicNumbers.max_substitutions];
-    public Pattern[] denormalPatterns = new Pattern[MagicNumbers.max_substitutions];
-    public String[] personSubs = new String[MagicNumbers.max_substitutions];
-    public Pattern[] personPatterns = new Pattern[MagicNumbers.max_substitutions];
-    public String[] person2Subs = new String[MagicNumbers.max_substitutions];
-    public Pattern[] person2Patterns = new Pattern[MagicNumbers.max_substitutions];
-    public String[] genderSubs = new String[MagicNumbers.max_substitutions];
-    public Pattern[] genderPatterns = new Pattern[MagicNumbers.max_substitutions];
+    private int normalCount = 0;
+    private int denormalCount = 0;
+    private int personCount = 0;
+    private int person2Count = 0;
+    private int genderCount = 0;
+    private String[] normalSubs = new String[MagicNumbers.max_substitutions];
+    private Pattern[] normalPatterns = new Pattern[MagicNumbers.max_substitutions];
+    private String[] denormalSubs = new String[MagicNumbers.max_substitutions];
+    private Pattern[] denormalPatterns = new Pattern[MagicNumbers.max_substitutions];
+    private String[] personSubs = new String[MagicNumbers.max_substitutions];
+    private Pattern[] personPatterns = new Pattern[MagicNumbers.max_substitutions];
+    private String[] person2Subs = new String[MagicNumbers.max_substitutions];
+    private Pattern[] person2Patterns = new Pattern[MagicNumbers.max_substitutions];
+    private String[] genderSubs = new String[MagicNumbers.max_substitutions];
+    private Pattern[] genderPatterns = new Pattern[MagicNumbers.max_substitutions];
 
     /**
      * Constructor given bot
@@ -120,7 +120,7 @@ public class PreProcessor {
      * @param count        number of patterns and substitutions
      * @return             result of applying substitutions to input
      */
-    String substitute(String request, Pattern[] patterns, String[] subs, int count) {
+    private String substitute(String request, Pattern[] patterns, String[] subs, int count) {
         String result = " "+request+" ";
         int index=0;
         try {
@@ -156,7 +156,7 @@ public class PreProcessor {
      * @param subs      array of substitution values
      * @return          number of patterns substitutions read
      */
-    public int readSubstitutionsFromInputStream(InputStream in, Pattern[] patterns, String[] subs) {
+    private int readSubstitutionsFromInputStream(InputStream in, Pattern[] patterns, String[] subs) {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String strLine;
         //Read File Line By Line
@@ -192,7 +192,7 @@ public class PreProcessor {
      * @param subs      array of substitution values
      * @return          number of patterns and substitutions read
      */
-    int readSubstitutions(String filename, Pattern[] patterns, String[] subs) {
+    private int readSubstitutions(String filename, Pattern[] patterns, String[] subs) {
         int subCount = 0;
         try{
 

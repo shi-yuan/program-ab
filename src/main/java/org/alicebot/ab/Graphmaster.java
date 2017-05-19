@@ -1,23 +1,4 @@
 package org.alicebot.ab;
-/* Program AB Reference AIML 2.0 implementation
-        Copyright (C) 2013 ALICE A.I. Foundation
-        Contact: info@alicebot.org
-
-        This library is free software; you can redistribute it and/or
-        modify it under the terms of the GNU Library General Public
-        License as published by the Free Software Foundation; either
-        version 2 of the License, or (at your option) any later version.
-
-        This library is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-        Library General Public License for more details.
-
-        You should have received a copy of the GNU Library General Public
-        License along with this library; if not, write to the
-        Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
-        Boston, MA  02110-1301, USA.
-*/
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,8 +7,6 @@ import java.util.regex.Pattern;
 
 /**
  * The AIML Pattern matching algorithm and data structure.
- *
- *
  */
 public class Graphmaster {
 	static private boolean DEBUG = false;
@@ -35,11 +14,11 @@ public class Graphmaster {
     public Bot bot;
     public String name;
     public final Nodemapper root;
-    public int matchCount = 0;
-    public int upgradeCnt = 0;
+    private int matchCount = 0;
+    private int upgradeCnt = 0;
     public HashSet<String> vocabulary;
-    public String resultNote = "";
-    public int categoryCnt = 0;
+    private String resultNote = "";
+    private int categoryCnt = 0;
     public static boolean enableShortCuts = false;
 
     /**
@@ -55,9 +34,8 @@ public class Graphmaster {
         root = new Nodemapper();
         this.bot = bot;
         this.name = name;
-        vocabulary = new HashSet<String>();
+        vocabulary = new HashSet<>();
     }
-
 
     /**
      * Convert input, that and topic to a single sentence having the form
@@ -77,8 +55,8 @@ public class Graphmaster {
      *
      * @param category            AIML Category
      */
-    String botPropRegex = "<bot name=\"(.*?)\"/>";
-    Pattern botPropPattern = Pattern.compile(botPropRegex, Pattern.CASE_INSENSITIVE);
+    private String botPropRegex = "<bot name=\"(.*?)\"/>";
+    private Pattern botPropPattern = Pattern.compile(botPropRegex, Pattern.CASE_INSENSITIVE);
 
     public String replaceBotProperties(String pattern) {
         if (pattern.contains("<B")) {
@@ -114,12 +92,12 @@ public class Graphmaster {
         categoryCnt++;
     }
 
-    boolean thatStarTopicStar(Path path) {
+    private boolean thatStarTopicStar(Path path) {
         String tail = Path.pathToSentence(path).trim();
         //System.out.println("thatStarTopicStar "+tail+" "+tail.equals("<THAT> * <TOPIC> *"));
         return tail.equals("<THAT> * <TOPIC> *");
     }
-    void addSets (String type, Bot bot, Nodemapper node, String filename) {
+    private void addSets(String type, Bot bot, Nodemapper node, String filename) {
         //System.out.println("adding Set "+type+" from "+bot.setMap);
         String setName = Utilities.tagTrim(type, "SET").toLowerCase();
         //AIMLSet aimlSet;
@@ -138,7 +116,7 @@ public class Graphmaster {
      * @param path            Pattern path
      * @param category        AIML category
      */
-    void addPath(Path path, Category category) {
+    private void addPath(Path path, Category category) {
         addPath(root, path, category);
 
     }
@@ -151,7 +129,7 @@ public class Graphmaster {
      * @param path     Pattern path to be added
      * @param category    AIML Category
      */
-    void addPath(Nodemapper node, Path path, Category category) {
+    private void addPath(Nodemapper node, Path path, Category category) {
         //if (path != null) System.out.println("Enable shortcuts = "+enableShortCuts+" path="+Path.pathToSentence(path)+" "+thatStarTopicStar(path));
         if (path == null) {
             node.category = category;
@@ -210,12 +188,12 @@ public class Graphmaster {
      * @param topic    topic pattern
      * @return         leaf node or null if no matching node is found
      */
-    public Nodemapper findNode(String input, String that, String topic) {
+    private Nodemapper findNode(String input, String that, String topic) {
         Nodemapper result = findNode(root, Path.sentenceToPath(inputThatTopic(input, that, topic)));
         if (verbose) System.out.println("findNode "+inputThatTopic(input, that, topic)+" "+result);
         return result;
     }
-    public static boolean verbose = false;
+    private static boolean verbose = false;
 
     /**
      * Recursively find a leaf node given a starting node and a path.
@@ -224,7 +202,7 @@ public class Graphmaster {
      * @param path         string path
      * @return             the leaf node or null if no leaf is found
      */
-    Nodemapper findNode(Nodemapper node, Path path) {
+    private Nodemapper findNode(Nodemapper node, Path path) {
         if (path == null && node != null) {
             if (verbose) System.out.println("findNode: path is null, returning node "+node.category.inputThatTopic());
             return node;
@@ -338,7 +316,7 @@ public class Graphmaster {
      * @param matchTrace      trace of match path for debugging purposes
      * @return  matching leaf node or null if no match is found
      */
-    final Nodemapper match(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
+    private final Nodemapper match(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
         Nodemapper matchedNode;
         //System.out.println("Match: Height="+node.height+" Length="+path.length+" Path="+Path.pathToSentence(path));
         matchCount++;
@@ -365,7 +343,7 @@ public class Graphmaster {
      * @param mode   Which mode of search
      * @param trace  Match trace info
      */
-    void fail (String mode, String trace) {
+    private void fail(String mode, String trace) {
        // System.out.println("Match failed ("+mode+") "+trace);
     }
 
@@ -377,7 +355,7 @@ public class Graphmaster {
      * @param matchTrace   trace of match for debugging purposes
      * @return         matching leaf node or null if no match found
      */
-    final Nodemapper nullMatch(Path path, Nodemapper node, String matchTrace) {
+    private Nodemapper nullMatch(Path path, Nodemapper node, String matchTrace) {
         if (path == null && node != null && NodemapperOperator.isLeaf(node) && node.category != null) return node;
         else {
             fail("null", matchTrace);
@@ -386,7 +364,7 @@ public class Graphmaster {
     }
 
 
-    final Nodemapper shortCutMatch(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
+    private Nodemapper shortCutMatch(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
         if (node != null && node.shortCut && path.word.equals("<THAT>") && node.category != null) {
             String tail = Path.pathToSentence(path).trim();
             //System.out.println("Shortcut tail = "+tail);
@@ -403,7 +381,7 @@ public class Graphmaster {
             return null;
         }
     }
-    final Nodemapper wordMatch(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
+    private Nodemapper wordMatch(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
         Nodemapper matchedNode;
         try {
             String uword = path.word.toUpperCase();
@@ -424,7 +402,7 @@ public class Graphmaster {
             return null;
         }
     }
-    final Nodemapper dollarMatch(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
+    private Nodemapper dollarMatch(Path path, Nodemapper node, String inputThatTopic, String starState, int starIndex, String[] inputStars, String[] thatStars, String[] topicStars, String matchTrace) {
         String uword = "$"+path.word.toUpperCase();
         Nodemapper matchedNode;
         if (path != null && NodemapperOperator.containsKey(node, uword) && (matchedNode = match(path.next, NodemapperOperator.get(node, uword), inputThatTopic, starState, starIndex, inputStars, thatStars, topicStars, matchTrace)) != null)  {
