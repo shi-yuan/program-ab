@@ -1,5 +1,8 @@
 package org.alicebot;
 
+import org.alicebot.aiml.Category;
+import org.alicebot.constant.MagicNumbers;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

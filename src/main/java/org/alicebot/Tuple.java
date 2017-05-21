@@ -1,6 +1,8 @@
 package org.alicebot;
 
 
+import org.alicebot.constant.MagicStrings;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +11,11 @@ public class Tuple extends HashMap<String, String> {
     public static int index = 0;
     public static HashMap<String, Tuple> tupleMap = new HashMap<>();
     public HashSet<String> visibleVars = new HashSet<>();
-    String name;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
 
     @Override
     public boolean equals(Object o) {

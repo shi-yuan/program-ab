@@ -1,7 +1,11 @@
 package org.alicebot;
 
-import org.alicebot.utils.IOUtils;
-import org.alicebot.utils.JapaneseUtils;
+import org.alicebot.aiml.AIMLProcessor;
+import org.alicebot.constant.MagicBooleans;
+import org.alicebot.constant.MagicNumbers;
+import org.alicebot.constant.MagicStrings;
+import org.alicebot.util.IOUtils;
+import org.alicebot.util.JapaneseUtils;
 
 import java.io.*;
 
@@ -54,7 +58,7 @@ public class Chat {
         addTriples();
         predicates.put("topic", MagicStrings.default_topic);
         predicates.put("jsenabled", MagicStrings.js_enabled);
-        if (MagicBooleans.trace_mode) System.out.println("Chat Session Created for bot " + bot.name);
+        if (MagicBooleans.trace_mode) System.out.println("Chat Session Created for bot " + bot.getName());
     }
 
     /**
@@ -62,7 +66,7 @@ public class Chat {
      */
     private void addPredicates() {
         try {
-            predicates.getPredicateDefaults(bot.config_path + "/predicates.txt");
+            predicates.getPredicateDefaults(bot.getConfigPath() + "/predicates.txt");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -73,8 +77,8 @@ public class Chat {
      */
     private int addTriples() {
         int tripleCnt = 0;
-        if (MagicBooleans.trace_mode) System.out.println("Loading Triples from " + bot.config_path + "/triples.txt");
-        File f = new File(bot.config_path + "/triples.txt");
+        if (MagicBooleans.trace_mode) System.out.println("Loading Triples from " + bot.getConfigPath() + "/triples.txt");
+        File f = new File(bot.getConfigPath() + "/triples.txt");
         if (f.exists())
             try {
                 InputStream is = new FileInputStream(f);
@@ -105,7 +109,7 @@ public class Chat {
      */
     public void chat() {
         BufferedWriter bw = null;
-        String logFile = bot.log_path + "/log_" + customerId + ".txt";
+        String logFile = bot.getLogPath() + "/log_" + customerId + ".txt";
         try {
             //Construct the bw object
             bw = new BufferedWriter(new FileWriter(logFile, true));
@@ -156,10 +160,10 @@ public class Chat {
 
         response = AIMLProcessor.respond(input, that, topic, this);
         //MagicBooleans.trace("in chat.respond(), response: " + response);
-        String normResponse = bot.preProcessor.normalize(response);
+        String normResponse = bot.getPreProcessor().normalize(response);
         //MagicBooleans.trace("in chat.respond(), normResponse: " + normResponse);
         if (MagicBooleans.jp_tokenize) normResponse = JapaneseUtils.tokenizeSentence(normResponse);
-        String sentences[] = bot.preProcessor.sentenceSplit(normResponse);
+        String sentences[] = bot.getPreProcessor().sentenceSplit(normResponse);
         for (String sentence : sentences) {
             that = sentence;
             //System.out.println("That "+i+" '"+that+"'");
@@ -197,10 +201,10 @@ public class Chat {
         StringBuilder response = new StringBuilder();
         matchTrace = "";
         try {
-            String normalized = bot.preProcessor.normalize(request);
+            String normalized = bot.getPreProcessor().normalize(request);
             normalized = JapaneseUtils.tokenizeSentence(normalized);
             //MagicBooleans.trace("in chat.multisentenceRespond(), normalized: " + normalized);
-            String sentences[] = bot.preProcessor.sentenceSplit(normalized);
+            String sentences[] = bot.getPreProcessor().sentenceSplit(normalized);
             History<String> contextThatHistory = new History<String>("contextThat");
             for (String sentence : sentences) {
                 //System.out.println("Human: "+sentences[i]);
@@ -219,9 +223,6 @@ public class Chat {
             return MagicStrings.error_bot_response;
         }
 
-        if (doWrites) {
-            bot.writeLearnfIFCategories();
-        }
         //MagicBooleans.trace("in chat.multisentenceRespond(), returning: " + response);
         return response.toString();
     }

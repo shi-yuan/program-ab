@@ -92,7 +92,7 @@ public class NodemapperOperator {
         if (node.map != null) {
             return node.map.keySet();
         } else {// node.type == unary_node_mapper
-            Set set = new HashSet<String>();
+            Set<String> set = new HashSet<>();
             if (node.key != null) set.add(node.key);
             return set;
         }

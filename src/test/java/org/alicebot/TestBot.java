@@ -1,5 +1,7 @@
 package org.alicebot;
 
+import org.alicebot.constant.MagicNumbers;
+import org.alicebot.constant.MagicStrings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ public class TestBot {
 
     @Before
     public void setUp() {
-        MagicStrings.setRootPath("src/test/resources");
+        String path = "src/test/resources";
         //AIMLProcessor.extension = new PCAIMLProcessorExtension();
 
         System.out.println("Working Directory = " + MagicStrings.root_path);
@@ -21,15 +23,21 @@ public class TestBot {
         Graphmaster.enableShortCuts = true;
 
         String botName = "test";
-        String action = "chat";
-        Bot bot = new Bot(botName, MagicStrings.root_path, action);
 
-        if (bot.brain.getCategories().size() < MagicNumbers.brain_print_size) {
-            bot.brain.printgraph();
+        Bot bot = new Bot(
+                path + "/aiml",
+                path + "/config",
+                path + "/log",
+                path + "/sets",
+                path + "/maps",
+                botName);
+
+        if (bot.getBrain().getCategories().size() < MagicNumbers.brain_print_size) {
+            bot.getBrain().printgraph();
         }
 
         chatSession = new Chat(bot, true);
-        bot.brain.nodeStats();
+        bot.getBrain().nodeStats();
     }
 
     @Test

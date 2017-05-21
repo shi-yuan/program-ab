@@ -1,5 +1,9 @@
 package org.alicebot;
 
+import org.alicebot.constant.MagicBooleans;
+import org.alicebot.constant.MagicNumbers;
+import org.alicebot.constant.MagicStrings;
+
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,11 +37,11 @@ public class PreProcessor {
      */
     public PreProcessor (Bot bot) {
 
-        normalCount = readSubstitutions(bot.config_path+"/normal.txt", normalPatterns, normalSubs);
-        denormalCount = readSubstitutions(bot.config_path+"/denormal.txt", denormalPatterns, denormalSubs);
-        personCount = readSubstitutions(bot.config_path +"/person.txt", personPatterns, personSubs);
-        person2Count = readSubstitutions(bot.config_path +"/person2.txt", person2Patterns, person2Subs);
-        genderCount = readSubstitutions(bot.config_path +"/gender.txt", genderPatterns, genderSubs);
+        normalCount = readSubstitutions(bot.getConfigPath()+"/normal.txt", normalPatterns, normalSubs);
+        denormalCount = readSubstitutions(bot.getConfigPath()+"/denormal.txt", denormalPatterns, denormalSubs);
+        personCount = readSubstitutions(bot.getConfigPath() +"/person.txt", personPatterns, personSubs);
+        person2Count = readSubstitutions(bot.getConfigPath() +"/person2.txt", person2Patterns, person2Subs);
+        genderCount = readSubstitutions(bot.getConfigPath() +"/gender.txt", genderPatterns, genderSubs);
         if (MagicBooleans.trace_mode) System.out.println("Preprocessor: "+normalCount+" norms "+personCount+" persons "+person2Count+" person2 ");
     }
 

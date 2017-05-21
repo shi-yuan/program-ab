@@ -1,6 +1,8 @@
 package org.alicebot;
 
-import org.alicebot.utils.JapaneseUtils;
+import org.alicebot.constant.MagicBooleans;
+import org.alicebot.constant.MagicStrings;
+import org.alicebot.util.JapaneseUtils;
 
 import java.io.*;
 import java.util.HashMap;

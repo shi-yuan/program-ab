@@ -1,6 +1,7 @@
 package org.alicebot;
 
-import org.alicebot.utils.CalendarUtils;
+import org.alicebot.constant.MagicStrings;
+import org.alicebot.util.CalendarUtils;
 
 import java.io.*;
 import java.util.Collections;
@@ -80,38 +81,26 @@ public class Utilities {
         String year = CalendarUtils.year();
         String date = CalendarUtils.date();
         try {
-            copyright = new StringBuilder(getFile(bot.config_path + "/copyright.txt"));
+            copyright = new StringBuilder(getFile(bot.getConfigPath() + "/copyright.txt"));
             String[] splitCopyright = copyright.toString().split("\n");
             copyright = new StringBuilder();
             for (String aSplitCopyright : splitCopyright) {
                 copyright.append("<!-- ").append(aSplitCopyright).append(" -->\n");
             }
-            copyright = new StringBuilder(copyright.toString().replace("[url]", bot.properties.get("url")));
+            copyright = new StringBuilder(copyright.toString().replace("[url]", bot.getProperties().get("url")));
             copyright = new StringBuilder(copyright.toString().replace("[date]", date));
             copyright = new StringBuilder(copyright.toString().replace("[YYYY]", year));
-            copyright = new StringBuilder(copyright.toString().replace("[version]", bot.properties.get("version")));
-            copyright = new StringBuilder(copyright.toString().replace("[botname]", bot.name.toUpperCase()));
+            copyright = new StringBuilder(copyright.toString().replace("[version]", bot.getProperties().get("version")));
+            copyright = new StringBuilder(copyright.toString().replace("[botname]", bot.getName().toUpperCase()));
             copyright = new StringBuilder(copyright.toString().replace("[filename]", AIMLFilename));
-            copyright = new StringBuilder(copyright.toString().replace("[botmaster]", bot.properties.get("botmaster")));
-            copyright = new StringBuilder(copyright.toString().replace("[organization]", bot.properties.get("organization")));
+            copyright = new StringBuilder(copyright.toString().replace("[botmaster]", bot.getProperties().get("botmaster")));
+            copyright = new StringBuilder(copyright.toString().replace("[organization]", bot.getProperties().get("organization")));
         } catch (Exception e) {//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
         copyright.append("<!--  -->\n");
         //System.out.println("Copyright: "+copyright);
         return copyright.toString();
-    }
-
-    public static String getPannousAPIKey(Bot bot) {
-        String apiKey = getFile(bot.config_path + "/pannous-apikey.txt");
-        if (apiKey.equals("")) apiKey = MagicStrings.pannous_api_key;
-        return apiKey;
-    }
-
-    public static String getPannousLogin(Bot bot) {
-        String login = getFile(bot.config_path + "/pannous-login.txt");
-        if (login.equals("")) login = MagicStrings.pannous_login;
-        return login;
     }
 
     /**

@@ -1,5 +1,8 @@
 package org.alicebot;
 
+import org.alicebot.constant.MagicBooleans;
+import org.alicebot.constant.MagicStrings;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,9 +32,9 @@ public class TripleStore {
         public Triple(String s, String p, String o) {
             Bot bot = TripleStore.this.bot;
             if (bot != null) {
-                s = bot.preProcessor.normalize(s);
-                p = bot.preProcessor.normalize(p);
-                o = bot.preProcessor.normalize(o);
+                s = bot.getPreProcessor().normalize(s);
+                p = bot.getPreProcessor().normalize(p);
+                o = bot.getPreProcessor().normalize(o);
             }
             if (s != null && p != null && o != null) {
                 //System.out.println("New triple "+s+":"+p+":"+o);
@@ -234,26 +237,26 @@ public class TripleStore {
 
     private Clause adjustClause(Tuple tuple, Clause clause) {
         Set vars = tuple.getVars();
-        String subj = clause.subj;
-        String pred = clause.pred;
-        String obj = clause.obj;
+        String subj = clause.getSubj();
+        String pred = clause.getPred();
+        String obj = clause.getObj();
         Clause newClause = new Clause(clause);
         if (vars.contains(subj)) {
             String value = tuple.getValue(subj);
             if (!value.equals(MagicStrings.unbound_variable)) {/*System.out.println("adjusting "+subj+" "+value);*/
-                newClause.subj = value;
+                newClause.setSubj(value);
             }
         }
         if (vars.contains(pred)) {
             String value = tuple.getValue(pred);
             if (!value.equals(MagicStrings.unbound_variable)) {/*System.out.println("adjusting "+pred+" "+value);*/
-                newClause.pred = value;
+                newClause.setPred(value);
             }
         }
         if (vars.contains(obj)) {
             String value = tuple.getValue(obj);
             if (!value.equals(MagicStrings.unbound_variable)) {/*System.out.println("adjusting "+obj+" "+value); */
-                newClause.obj = value;
+                newClause.setObj(value);
             }
         }
         return newClause;
@@ -261,15 +264,15 @@ public class TripleStore {
 
     private Tuple bindTuple(Tuple partial, String triple, Clause clause) {
         Tuple tuple = new Tuple(partial);
-        if (clause.subj.startsWith("?")) tuple.bind(clause.subj, getSubject(triple));
-        if (clause.pred.startsWith("?")) tuple.bind(clause.pred, getPredicate(triple));
-        if (clause.obj.startsWith("?")) tuple.bind(clause.obj, getObject(triple));
+        if (clause.getSubj().startsWith("?")) tuple.bind(clause.getSubj(), getSubject(triple));
+        if (clause.getPred().startsWith("?")) tuple.bind(clause.getPred(), getPredicate(triple));
+        if (clause.getObj().startsWith("?")) tuple.bind(clause.getObj(), getObject(triple));
         return tuple;
     }
 
     public HashSet<Tuple> selectFromSingleClause(Tuple partial, Clause clause, Boolean affirm) {
         HashSet<Tuple> result = new HashSet<>();
-        HashSet<String> triples = getTriples(clause.subj, clause.pred, clause.obj);
+        HashSet<String> triples = getTriples(clause.getSubj(), clause.getPred(), clause.getObj());
         //System.out.println("TripleStore: selected "+triples.size()+" from single clause "+clause.subj+" "+clause.pred+" "+clause.obj);
         if (affirm) {
             for (String triple : triples) {
@@ -287,7 +290,7 @@ public class TripleStore {
         HashSet<Tuple> result = new HashSet<>();
         Clause clause = clauses.get(0);
         clause = adjustClause(partial, clause);
-        HashSet<Tuple> tuples = selectFromSingleClause(partial, clause, clause.affirm);
+        HashSet<Tuple> tuples = selectFromSingleClause(partial, clause, clause.getAffirm());
         if (clauses.size() > 1) {
             ArrayList<Clause> remainingClauses = new ArrayList<Clause>(clauses);
             remainingClauses.remove(0);

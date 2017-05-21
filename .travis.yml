@@ -9,9 +9,8 @@ addons:
       - oracle-java8-installer
 
 before_install:
-  - sudo update-java-alternatives -s java-8-oracle
-  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-  - sudo java -version
+  - jdk_switcher use oraclejdk8
+  - java -version
 
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true

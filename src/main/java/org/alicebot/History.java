@@ -1,5 +1,8 @@
 package org.alicebot;
 
+import org.alicebot.constant.MagicNumbers;
+import org.alicebot.constant.MagicStrings;
+
 /**
  * History object to maintain history of input, that request and response
  *
