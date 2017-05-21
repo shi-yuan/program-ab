@@ -25,15 +25,6 @@ public class IOUtils {
         }
     }
 
-    public String readLine() throws IOException {
-        return reader.readLine();
-    }
-
-    public void writeLine(String line) throws IOException {
-        writer.write(line);
-        writer.newLine();
-    }
-
     public void close() throws IOException {
         if (reader != null) {
             reader.close();
@@ -43,15 +34,11 @@ public class IOUtils {
         }
     }
 
-    public static void writeOutputTextLine(String prompt, String text) {
-        System.out.println(prompt + ": " + text);
-    }
-
     public static String readInputTextLine() throws IOException {
         return readInputTextLine(null);
     }
 
-    public static String readInputTextLine(String prompt) throws IOException {
+    private static String readInputTextLine(String prompt) throws IOException {
         if (prompt != null) {
             System.out.print(prompt + ": ");
         }
