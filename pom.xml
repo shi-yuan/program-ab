@@ -17,13 +17,6 @@
             <id>nexus-aliyun</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>soluvas-public-thirdparty</id>
-            <url>http://nexus.bippo.co.id/nexus/content/repositories/soluvas-public-thirdparty/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
 
     <properties>
@@ -31,36 +24,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20160810</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.reduls.sanmoku</groupId>
-            <artifactId>sanmoku</artifactId>
-            <version>0.0.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.reduls.sanmoku</groupId>
-            <artifactId>sanmoku-feature-ex</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

@@ -1,10 +1,8 @@
 package org.alicebot;
 
-import org.alicebot.ab.*;
-import org.alicebot.ab.aiml.AIMLProcessor;
-import org.alicebot.ab.aiml.PCAIMLProcessorExtension;
-import org.alicebot.ab.constant.MagicNumbers;
-import org.alicebot.ab.constant.MagicStrings;
+import org.alicebot.ab.Bot;
+import org.alicebot.ab.Chat;
+import org.alicebot.ab.constant.Constants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,27 +15,24 @@ public class TestBot {
     private Chat chatSession;
 
     @Before
-    public void setUp() {
-        String path = "src/test/resources";
-
-        MagicStrings.setRootPath(path);
-
-        AIMLProcessor.extension = new PCAIMLProcessorExtension();
-
-        System.out.println("Working Directory = " + MagicStrings.root_path);
-
-        Graphmaster.enableShortCuts = true;
+    public void setUp() throws Exception {
+        //AIMLProcessor.extension = new PCAIMLProcessorExtension();
 
         String botName = "test";
 
-        Bot bot = new Bot(botName);
+        String path = "src/test/resources";
+        Bot bot = new Bot(botName, path + "/aiml",
+                path + "/config",
+                path + "/sets",
+                path + "/maps",
+                path + "/config/properties.txt");
 
-        if (bot.brain.getCategories().size() < MagicNumbers.brain_print_size) {
-            bot.brain.printgraph();
+        if (bot.getBrain().getCategories().size() < Constants.brain_print_size) {
+            bot.getBrain().printgraph();
         }
 
-        chatSession = new Chat(bot, true);
-        bot.brain.nodeStats();
+        chatSession = new Chat(bot);
+        bot.getBrain().nodeStats();
     }
 
     @Test
@@ -77,7 +72,7 @@ public class TestBot {
             request = pair[0];
             expected = pair[1];
 
-            System.out.println("STATE=" + request + ":THAT=" + chatSession.thatHistory.get(0).get(0) + ":TOPIC=" + chatSession.predicates.get("topic"));
+            System.out.println("STATE=" + request + ":THAT=" + chatSession.getThatHistory().get(0).get(0) + ":TOPIC=" + chatSession.getPredicates().get("topic"));
 
             response = chatSession.multisentenceRespond(request);
 
@@ -86,7 +81,7 @@ public class TestBot {
 
         request = "Hi";
         response = chatSession.multisentenceRespond(request);
-        System.out.println("STATE=" + request + ":THAT=" + chatSession.thatHistory.get(0).get(0) + ":TOPIC=" + chatSession.predicates.get("topic"));
+        System.out.println("STATE=" + request + ":THAT=" + chatSession.getThatHistory().get(0).get(0) + ":TOPIC=" + chatSession.getPredicates().get("topic"));
         anyOf(containsString("Hi! Nice to meet you!"), containsString("Hello!")).matches(response);
     }
 }
