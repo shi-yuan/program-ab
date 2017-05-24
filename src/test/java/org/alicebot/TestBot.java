@@ -1,7 +1,10 @@
 package org.alicebot;
 
-import org.alicebot.constant.MagicNumbers;
-import org.alicebot.constant.MagicStrings;
+import org.alicebot.ab.*;
+import org.alicebot.ab.aiml.AIMLProcessor;
+import org.alicebot.ab.aiml.PCAIMLProcessorExtension;
+import org.alicebot.ab.constant.MagicNumbers;
+import org.alicebot.ab.constant.MagicStrings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +19,10 @@ public class TestBot {
     @Before
     public void setUp() {
         String path = "src/test/resources";
-        //AIMLProcessor.extension = new PCAIMLProcessorExtension();
+
+        MagicStrings.setRootPath(path);
+
+        AIMLProcessor.extension = new PCAIMLProcessorExtension();
 
         System.out.println("Working Directory = " + MagicStrings.root_path);
 
@@ -24,20 +30,14 @@ public class TestBot {
 
         String botName = "test";
 
-        Bot bot = new Bot(
-                path + "/aiml",
-                path + "/config",
-                path + "/log",
-                path + "/sets",
-                path + "/maps",
-                botName);
+        Bot bot = new Bot(botName);
 
-        if (bot.getBrain().getCategories().size() < MagicNumbers.brain_print_size) {
-            bot.getBrain().printgraph();
+        if (bot.brain.getCategories().size() < MagicNumbers.brain_print_size) {
+            bot.brain.printgraph();
         }
 
         chatSession = new Chat(bot, true);
-        bot.getBrain().nodeStats();
+        bot.brain.nodeStats();
     }
 
     @Test
